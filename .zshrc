@@ -11,7 +11,7 @@ export ZSH=$HOME/.oh-my-zsh
 #ZSH_THEME="nanotech"
 #ZSH_THEME="Soliah"
 ZSH_THEME="zu"
-
+TERM=xterm
 # Example aliases
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
@@ -78,3 +78,5 @@ export PATH="/usr/local/sbin:/usr/local/bin:/usr/bin:/usr/bin/core_perl"
 
 # ssh
 # export SSH_KEY_PATH="~/.ssh/dsa_id"
+
+setopt HIST_IGNORE_DUPS
