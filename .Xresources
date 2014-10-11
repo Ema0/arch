@@ -29,27 +29,50 @@ URxvt.colorUL: #4682B4
 !black
 URxvt.color0: #454545
 URxvt.color8: #727272
+frost.color0: #323246
+frost.color8: #38385C
+
 !red
 URxvt.color1: #D44A40
 URxvt.color9: #D4746A
+frost.color1: #5A7882
+frost.color9: #647F89
+
 !green
 URxvt.color2: #98CB3C
 URxvt.color10: #AFCB66
+frost.color2: #8C8CA0
+frost.color10: #9A9AB1
+
 !yellow
 URxvt.color3: #D4BE66
 URxvt.color11: #E6D593
+frost.color3: #1E828C
+frost.color11: #2E929C
+
 !blue
 URxvt.color4: #43648E
 URxvt.color12: #5A89C9
+frost.color4: #3C788C
+frost.color12: #568696
+
 !magenta
 URxvt.color5: #BA5680
 URxvt.color13: #C46497
+frost.color5: #6EA0B4
+frost.color13: #87ADBD
+
 !cyan
 URxvt.color6: #7DCCCA
 URxvt.color14: #95D9CD
+frost.color6: #6E8CA0
+frost.color14: #809FB4
+
 !white
 URxvt.color7: #C5C5C5
 URxvt.color15: #CFCFCF
+frost.color7: #96BEC8
+frost.color15: #AECDD5
 
 ! URxvt*chdir:                          string
 ! URxvt*reverseVideo:                   boolean
