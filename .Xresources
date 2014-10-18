@@ -1,13 +1,15 @@
 URxvt.depth: 32
 URxvt.background: rgba:1111/1111/1111/dddd
 URxvt.scrollBar: false
+URxvt*font: xft: Terminus :size=11:pixelsize=12
 !URxvt.font: -*-terminus-medium-*-*-*-*-140-*-*-*-*-iso8859-1
-URxvt*font: xft:Dejavu Sans Mono:size=9:pixelsize=11
-URxvt*letterSpace: -1.5
+!URxvt*font: xft:Dejavu Sans Mono:size=9:pixelsize=11
+URxvt*letterSpace: 0
 URxvt*geometry: 110x32
 urxvt*perl-lib: /usr/lib/urxvt/perl/
 URxvt.perl-ext-common: default,matcher,vtwheel
 URxvt.url-launcher: /usr/bin/google-chrome-stable
+URxvt*loginShell: true
 URxvt.matcher.button: 1
 URxvt.cursorBlink: 1
 URxvt.cursorUnderline: 1
