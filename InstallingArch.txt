@@ -1,0 +1,401 @@
+=====ARCH INSTALL=====
+from TheMukt Linuxveda
+
+-----------------------------------------------
+{1. Internet?}
+
+It is recommended that you use the Ethernet connection for installation as your PC might need drivers for the wireless chip and it will only complicate things. To keep it simple, plug the Ethernet cable and check if you have the Internet connectivity. Run this command:
+
+#   ping -c 3 www.google.com
+
+If everything works fine, move ahead.
+------------------------------------------------
+
+{2. Preparing the harddrive}
+
+We need to prepare the hard-drive for the fresh install. It is usually recommended that you create the partition or format the hard-drive from live CD of openSUSE or any other distribution so that you don’t delete any any partition with data on it by mistake. In this article I am going to create new partitions. If you already have partitions for root, home and swap then you can skip this step and move to ‘creating file-system.’
+
+I am using GPT instead of MBR (there are many advantages of GPT over MBR), Arch comes with a couple of partitioning tools, but for GPT ‘cgdisk‘ is used. However if you are dual booting with Windows or if you already have another distro installed, or for some reason you want to keep MBR, use cfdisk instead of cgdisk. The procedure is same just run cfdisk command instead of cgdisk.
+
+Run lsblk command to see the partition structure of the hard drive on which you want to install Arch. In my case it’s sda.
+
+#   lsblk
+
+To start partitioning, run this command:
+
+#   cgdisk /dev/sda
+
+[BOOT PARTITION]
+Let’s start partitioning the SSD.
+
+Note: If you are using cfdisk command for MBR, you don’t need to create BIOS Boot Partition, so skip Boot Partition step.
+Boot Partition
+
+BIOS-GPT requires BIOS Boot Partition at the beginning of the disk. The Free Space is already selected and then
+
+    Hit New -> Enter
+    First Sector -> Enter
+    Size in Sector -> 1007KiB -> Enter
+    Hex Code of GUID (L to show pres, Enter = 8300) -> ef02 ->Enter
+    Enter partition name – > Enter
+
+You will notice a 1007.0 KiB BIOS boot partition has been created.
+
+[CREATE ROOT]
+Use keyboard to select the free space
+
+    Hit New -> Enter
+    First Sector -> Enter
+    Now it will ask you how much space you want to allocate to that partition. In my case I will give root over 20GB
+    Size in Sector -> 20GB -> Enter
+    Hex Code of GUID (L to show pres, Enter = 8300) -> Enter
+    Enter partition name – > Enter
+
+Now you will see a 20GB partition has been created.
+
+[SWAP]
+Creating Swap
+
+I have SSD on my desktop with 8GB of RAM and I really don’t need suspension or hibernation so I don’t bother to create swap. Depending on your need, you can create swap. Use keyboard and select Free Space
+
+    Hit New -> Enter
+    First Sector -> Enter
+    Now it will ask you how much space you want to allocate to that partition. I would give 2GB for swap (check what’s recommended)
+    Size in Sector -> 2GB -> Enter
+    Hex Code of GUID (L to show pres, Enter = 8300) -> Enter
+    Enter partition name – > swap
+
+Swap has been created.
+
+[HOME]
+Use keyboard and select Free Space
+
+    Hit New -> Enter
+    First Sector -> Enter
+    Now it will ask you how much space you want to allocate to that partition. Here I am giving the remaining space to home.
+    Size in Sector -> 50GB -> Enter
+    Hex Code of GUID (L to show pres, Enter = 8300) -> Enter
+    Enter partition name – > home -> Enter
+
+If everything looks good select ‘Write‘, which will ask you to confirm if you want to write the changes. Type ‘yes‘ if you are sure. Once done select ‘Quit‘.
+
+
+You can check the structure of partition by running this command:
+
+#   lsblk
+
+The command will show you the partition structure.
+What you have to note here is the name of each partition so we can format them accordingly. In my case it was:
+
+sda1 – BIOS Boot
+sda2 – root
+sda3 – swap
+sda4 – home
+
+It may be different in your case so choose accordingly.
+-------------------------------------------------------
+
+{3. Create filesystem}
+
+It’s now time to format these partitions and we are going to use ext4 file system. Run the following command for root and home (note choose the appropriate partition instead of sda2 and sda4).
+
+# mkfs.ext4 /dev/sda2
+
+# mkfs.ext4 /dev/sda4
+
+Now let’s format SWAP
+
+# mkswap /dev/sda3
+# swapon /dev/sda3
+
+[make sure to select the appropriate partition instead of sda3]
+
+In order to make sure everything is correct check your partitions with this command:
+
+# lsblk /dev/sda
+
+[INSTALLING THE BASE SYSTEM]
+
+If everything looks fine, it’s time to install Arch. First we need to mount root partition and then create home directory.
+
+# mount /dev/sda2 /mnt
+
+Then create the home directory:
+
+# mkdir /mnt/home
+
+Now mount home
+
+# mount /dev/sda4 /mnt/home
+--------------------------------------------
+
+{4. Choose Mirror}
+
+Before we initiate the install process let’s select the closest mirror so that you get the best speed while downloading packages. To edit the mirror list run this command:
+
+# nano /etc/pacman.d/mirrorlist
+
+Which will open the long list of mirrors. You can select the one closest to you. If you want to search the name of the location hit Ctrl+W and type the location you are looking for, once found go to the url of the mirror and hit Alt+6 to copy the line. Now use ‘Page Up‘ key to go on top and then hit Ctrl+U to paste that line on top. Hit Ctrl+x to exit and then type Y to save the changes you made.
+--------------------------------------------
+
+{5. Installing base package}
+
+Now we are about to install base and base-devel packages (which will be needed later). Run this command:
+
+# pacstrap -i /mnt base base-devel
+--------------------------------------------
+
+{6. Configure fstab}
+
+Once all these packages are installed you need to configure your fstab. Run:
+
+# genfstab -U -p /mnt >> /mnt/etc/fstab
+
+(NOTE: Run the above command only once even if there are any issues. If there are problems, edit fstab manually, don’t re-run the command).
+
+You must always check if fstab entry is correct or you won’t be able to boot into your system. To check fstab entry, run:
+
+# nano /mnt/etc/fstab
+
+If everything is OK you should see root and home mounted.
+
+Chroot into your newly installed system to configure it.
+
+# arch-chroot /mnt
+
+----------------------------------------------
+
+{7. Language and Location}
+
+We are going to configure the language of the new system. Since I am using English I am choosing “en_US.UTF-8“. You can choose the language that you use. To set the language, run the following command:
+
+# nano /etc/locale.gen
+
+It will open a huge list of locales, go and un-comment the one you need. In my case I un-commented:
+
+en_US.UTF-8 UTF-8
+
+Now run
+
+# locale-gen
+
+# echo LANG=en_US.UTF-8 > /etc/locale.conf
+
+# export LANG=en_US.UTF-8
+
+----------------------------------------------
+
+{8. Time Zone}
+
+It’s time now to configure the time zone for your system. If you don’t know the exact name of your sub-time zone (for example in my case it Zone is America and sub-zone is New_York), run following command to find the time zone.
+
+# ls /usr/share/zoneinfo/
+
+Now you can configure the zone
+
+# ln -s /usr/share/zoneinfo/<Zone>/<SubZone> /etc/localtime
+
+In my case it was
+
+# ln -s /usr/share/zoneinfo/America/New_York> /etc/localtime
+
+Let’s now configure the hardware clock. It is recommended to use UTC instead of localtime.
+
+# hwclock --systohc --utc
+
+[HOSTNAME]
+
+If you want a custom hostname for your system, run the following command and choose your desired name instead of mukt
+
+# echo mukt > /etc/hostname
+
+-----------------------------------------------
+
+{9. Configure Repos}
+
+Now it’s time to configure repositories. Open the pacman.conf file:
+
+# nano /etc/pacman.conf
+
+If you are using 64 bit system you should go ahead and enable (un-comment) the “multilib” repo:
+
+[multilib]
+Include = /etc/pacman.d/mirrorlist
+
+Then hit Ctrl+X and then type ‘y‘ when asked.
+
+Now it’s time to update the repositories by running this command:
+
+pacman -Sy
+
+-----------------------------------------------
+
+{10. Users}
+
+We first need to give a root password so we can perform administrative tasks. But we will also create a user for the system as it’s not recommended to run as root.
+
+First set root password. Run this command and give the password and give the desired password:
+
+# passwd
+
+Now it’s time to create a user for the system and also add some groups to it. So run the following command and replace ‘mukt‘ with your user-name.
+
+# useradd -m -g users -G wheel,storage,power -s /bin/bash mukt
+
+Then give the password for this new user (which in my case was mukt). When you run this command it will again ask you to enter new password:
+
+# passwd mukt
+
+Now we have to allow this use to do administrative jobs as sudo so let’s install sudo.
+
+# pacman -S sudo
+
+Once that is done, we will now allow the users in wheel group to be able to performance administrative tasks with sudo. Run the following command to edit the sudoers:
+
+# EDITOR=nano visudo
+
+It will open the sudoers file where you have to uncomment this line:
+
+%wheel ALL=(ALL) ALL
+
+I will also recommend installing bash-completion so that Arch auto-complete commands of names of packages:
+
+# pacman -S bash-completion
+
+------------------------------------------------
+
+{11. BOOT loader}
+
+We are now going to install grub and configure the boot loader. In my case I have a system with BIOS (if you have UFI then check out the appropriate Arch Wiki page).
+
+Let’s first install grub for bios and configure it. Run these commands:
+
+# pacman -S grub
+
+# grub-install --target=i386-pc --recheck /dev/sda
+
+I have other operating systems installed on the same system (namely openSUSE) and I wanted Arch to show these systems in the grub menu so I can select at the boot. Even if you don’t have other OSes installed I would recommend installing OS Prober:
+
+pacman -S os-prober
+
+Once it is installed update the grub so Arch knows about other operating systems. Run this command:
+
+# grub-mkconfig -o /boot/grub/grub.cfg
+
+In order for it to stay connected to the Internet after reboots, find the interface for lan by run this command:
+
+ip link
+
+Then enable and start the network for that interface by running these commands:
+
+# systemctl enable dhcpcd@_name_of_interface.service
+
+# systemctl start dhcpcd@_name_of_interface.service
+
+We are now done with the installation and configuration of Arch Linux. There is still some work left – installing the Display Manager (X server), the desktop environment and appropriate graphics drivers. Since the OS is installed let’s reboot into the new OS. So first exit from the chroot environment:
+
+# exit
+
+And now unmount the root, home and reboot the system:
+
+# umount -R /mnt
+
+# reboot
+
+Note: Remove the USB so that the system doesn’t boot into it again.
+
+---------------------------------------------
+        !!BOOT IN NEW ARCH SYSTEM!!
+---------------------------------------------
+
+If you want you can log in as root user as we are still going to do administrative tasks. Now comes the part where we are going to install X server, video drivers and desired desktop environment.
+
+Let’s install X
+
+# pacman -S xorg-server xorg-server-utils xorg-xinit
+
+Now we will also install mesa for 3D support:
+
+# pacman -S mesa
+
+It’s time to install video drivers. I assume you know which GPU you are using. In my case I have Nvidia GTX 470 on my systems so I installed the non-free Nvidia driver.
+
+# sudo pacman -S nvidia lib32-nvidia-utils
+
+Arch wiki has done a great job at documenting which drivers you need to install for your hardware.
+
+-------------------------------------------------------------------------------------------------------------------------------------
+| Brand     |    Type     |        Driver         |     Multilib Package     |                   Documentation                      |
+|===================================================================================================================================| 
+|           | OpenSource  |  xf86-video-ATI       |  lib32-ati-dri           |  https://wiki.archlinux.org/index.php/ATI            |
+| AMD/ATI   |             |                       |                          |                                                      |
+|           | Proprietary |  catalyst-dkms        | lib32-catalyst-utils     |  https://wiki.archlinux.org/index.php/AMD_Catalyst   |
+|-----------------------------------------------------------------------------------------------------------------------------------|
+|           |             |                       |                          |                                                      |
+| Intel     | OpenSource  | xf86-video-intel      | lib32-intel-dri          |  https://wiki.archlinux.org/index.php/Intel_Graphics |
+|           |             |                       |                          |                                                      |
+|-----------------------------------------------------------------------------------------------------------------------------------|
+|           |             | nvidia                | lib32-nvidia-libgl       |                                                      |
+|           | Proprietary | nvidia-304xx          | lib32-nvidia-304xx-utils |  https://wiki.archlinux.org/index.php/NVIDIA         |
+|           |             | nvidia-173xx          | lib32-nvidia-173xx-utils |                                                      |
+| NVidia    |             | nvidia-96xx           | lib32-nvidia-96xx-utils  |                                                      |
+|           |             |                       |                          |                                                      |
+|           |             | xf86-video-nouveau    | lib32-nouveau-dri        |  https://wiki.archlinux.org/index.php/Nouveau        |
+|           | OpenSource  |                       |                          |                                                      |
+|           |             | xf86-video-nv         |       --                 |  (legacy driver)                                     |
+|-----------------------------------------------------------------------------------------------------------------------------------|
+|           |             |                       |                          |                                                      |
+| VIA       | OpenSource  | xf86-video-openchrome |       --                 |  https://wiki.archlinux.org/index.php/Via            |
+|-----------------------------------------------------------------------------------------------------------------------------------|
+
+
+If you are using a laptop you need to install the drivers for input devices like touch-pad
+
+# pacman -S xf86-input-synaptics
+
+Now install the default environment before we move to install the preferred desktop environment:
+
+# pacman -S xorg-twm xorg-xclock xterm
+
+You can now test if X is working by running this command:
+
+# startx
+
+If everything works fine, it will open x windows, you can exit it by clicking on the first window and type ‘exit’.
+
+--------------------------------------------------
+
+{12. Extra Stuff}
+
+[ALSA]
+
+# sudo pacman -S alsa-utils
+
+[EXTRA X.ORG STUFF]
+
+# pacman -S xorg-twm xorg-xclock xterm
+
+[FONTS]
+
+# sudo pacman -S ttf-dejavu terminous *place other fonts here*
+
+[GNOME?]
+
+# sudo pacman -S gnome
+
+[I prefer OPENBOX!]
+
+# sudo pacman -S openbox
+
+[MAYBE LATER DWM]
+[FIREFOX]
+
+# sudo pacman -S firefox
+
+And use it to download yaourt from AUR:
+
+# tar -xzf *yaourt.tar.gz-downloadedfromAUR*
+# cd yaourtdir
+# makepkg
+# sudo pacman -U yaourtpackagejustcreated
+
