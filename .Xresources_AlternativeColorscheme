@@ -9,7 +9,7 @@ URxvt*letterSpace: 0
 URxvt*geometry: 110x32
 urxvt*perl-lib: /usr/lib/urxvt/perl/
 URxvt*.perl-ext-common: default,matcher,vtwheel
-URxvt*.url-launcher: /usr/bin/firefox
+URxvt*.url-launcher: /usr/bin/google-chrome-stable
 URxvt*loginShell: true
 URxvt*.matcher.button: 1
 URxvt*.cursorBlink: 1
@@ -30,68 +30,52 @@ URxvt.cursor: #839496
 URxvt.colorUL: #4682B4
 
 !black
-!URxvt.color0: #454545
-!URxvt.color8: #727272
+URxvt.color0: #454545
+URxvt.color8: #727272
 frost.color0: #323246
 frost.color8: #38385C
-*color0: #1C1C1C
-*color8: #C5C5C5
 
 !red
-!URxvt.color1: #D44A40
-!URxvt.color9: #D4746A
+URxvt.color1: #D44A40
+URxvt.color9: #D4746A
 frost.color1: #5A7882
 frost.color9: #647F89
-*color1: #ff005b
-*color9: #ff00a0
 
 !green
-!*color2: #98CB3C
-*color10: #cee318
+URxvt.color2: #98CB3C
+URxvt.color10: #AFCB66
 frost.color2: #8C8CA0
 frost.color10: #9A9AB1
-*color2: #ccff00
-!*color10: #92DB44
 
 !yellow
-!URxvt.color3: #D4BE66
-!URxvt.color11: #E6D593
+URxvt.color3: #D4BE66
+URxvt.color11: #E6D593
 frost.color3: #1E828C
 frost.color11: #2E929C
-*color3: #ffe755
-*color11: #ff9f00 
 
 !blue
-!URxvt.color4: #43648E
-!URxvt.color12: #5A89C9
+URxvt.color4: #43648E
+URxvt.color12: #5A89C9
 frost.color4: #3C788C
 frost.color12: #568696
-*color4: #048ac7
-*color12: #48c6ff
 
 !magenta
-!URxvt.color5: #BA5680
-!URxvt.color13: #C46497
+URxvt.color5: #BA5680
+URxvt.color13: #C46497
 frost.color5: #6EA0B4
 frost.color13: #87ADBD
-*color5: #833c9f
-*color13: #be67e1
 
 !cyan
-!URxvt.color6: #7DCCCA
-!URxvt.color14: #95D9CD
+URxvt.color6: #7DCCCA
+URxvt.color14: #95D9CD
 frost.color6: #6E8CA0
 frost.color14: #809FB4
-*color6: #0ac1cd
-*color14: #63e7f0
 
 !white
-!URxvt.color7: #C5C5C5
-!URxvt.color15: #CFCFCF
+URxvt.color7: #C5C5C5
+URxvt.color15: #CFCFCF
 frost.color7: #96BEC8
 frost.color15: #AECDD5
-*color7: #e5e5e5
-*color15: #f3f3f3
 
 ! URxvt*chdir:                          string
 ! URxvt*reverseVideo:                   boolean
